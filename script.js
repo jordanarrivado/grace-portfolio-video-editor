@@ -46,6 +46,32 @@ document.querySelectorAll('.video-shell').forEach((shell) => {
   video.addEventListener('ended', () => shell.classList.remove('is-playing'));
 });
 
+const workFilters = document.querySelectorAll('.work-filter');
+const videoCards = document.querySelectorAll('.video-card');
+
+workFilters.forEach((button) => {
+  button.addEventListener('click', () => {
+    const selectedCategory = button.dataset.filter;
+
+    workFilters.forEach((filter) => {
+      const isActive = filter === button;
+      filter.classList.toggle('is-active', isActive);
+      filter.setAttribute('aria-pressed', String(isActive));
+    });
+
+    videoCards.forEach((card) => {
+      const shouldShow = selectedCategory === 'all' || card.dataset.category === selectedCategory;
+      card.hidden = !shouldShow;
+
+      if (!shouldShow) {
+        const video = card.querySelector('video');
+        video.pause();
+        card.querySelector('.video-shell').classList.remove('is-playing');
+      }
+    });
+  });
+});
+
 const observer = new IntersectionObserver(
   (entries) => {
     entries.forEach((entry) => {
